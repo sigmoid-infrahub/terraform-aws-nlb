@@ -1,0 +1,103 @@
+{
+    "resourceSpecId": "33333333-3333-4333-8333-333333333332",
+    "stableId": "main-nlb",
+    "displayName": "Main Network Load Balancer",
+    "resourceType": "loadbalancer.elb",
+    "vpcDependency": "required",
+    "status": "draft",
+    "inputs": {
+        "name": "sigmoid-main-nlb",
+        "load_balancer_type": "network",
+        "internal": true,
+        "subnets": [
+            { "ref": "private-subnet-1.id", "required": true },
+            { "ref": "private-subnet-2.id", "required": true }
+        ],
+        "enable_deletion_protection": true,
+        "enable_cross_zone_load_balancing": true,
+        "access_logs": {
+            "enabled": true,
+            "bucket": { "ref": "logs-bucket.id" },
+            "prefix": "nlb-logs"
+        },
+        "listeners": [
+            {
+                "port": 443,
+                "protocol": "TLS",
+                "ssl_policy": "ELBSecurityPolicy-TLS13-1-2-2021-06",
+                "certificate_arn": { "ref": "acm-cert.arn" },
+                "default_action": {
+                    "type": "forward",
+                    "target_group_key": "grpc-tg"
+                }
+            },
+            {
+                "port": 6379,
+                "protocol": "TCP",
+                "default_action": {
+                    "type": "forward",
+                    "target_group_key": "redis-tg"
+                }
+            }
+        ],
+        "target_groups": [
+            {
+                "name": "sigmoid-grpc-tg",
+                "backend_protocol": "TLS",
+                "backend_port": 9090,
+                "target_type": "ip",
+                "health_check": {
+                    "enabled": true,
+                    "port": "traffic-port",
+                    "protocol": "TCP",
+                    "healthy_threshold": 2,
+                    "unhealthy_threshold": 2,
+                    "interval": 10
+                }
+            },
+            {
+                "name": "sigmoid-redis-tg",
+                "backend_protocol": "TCP",
+                "backend_port": 6379,
+                "target_type": "ip",
+                "health_check": {
+                    "enabled": true,
+                    "port": "traffic-port",
+                    "protocol": "TCP",
+                    "healthy_threshold": 2,
+                    "unhealthy_threshold": 2,
+                    "interval": 10
+                }
+            }
+        ],
+        "tags": {
+            "Environment": "production",
+            "Project": "sigmoid"
+        }
+    },
+    "inputSpecs": [
+        { "name": "name", "type": "string", "required": true },
+        { "name": "load_balancer_type", "type": "string", "required": true },
+        { "name": "internal", "type": "boolean", "required": false, "default": false },
+        { "name": "subnets", "type": "array", "required": true },
+        { "name": "security_groups", "type": "array", "required": false },
+        { "name": "enable_deletion_protection", "type": "boolean", "required": false, "default": false },
+        { "name": "enable_cross_zone_load_balancing", "type": "boolean", "required": false, "default": true },
+        { "name": "idle_timeout", "type": "number", "required": false, "default": 60 },
+        { "name": "enable_http2", "type": "boolean", "required": false, "default": true },
+        { "name": "drop_invalid_header_fields", "type": "boolean", "required": false, "default": false },
+        { "name": "access_logs", "type": "object", "required": false },
+        { "name": "listeners", "type": "array", "required": false },
+        { "name": "target_groups", "type": "array", "required": false },
+        { "name": "tags", "type": "object", "required": false }
+    ],
+    "scope": {
+        "vpcId": "main-vpc"
+    },
+    "position": { "x": 200, "y": 200 },
+    "terraform": {
+        "module": {
+            "source": "../../terraform-modules/terraform-aws-nlb"
+        }
+    }
+}
