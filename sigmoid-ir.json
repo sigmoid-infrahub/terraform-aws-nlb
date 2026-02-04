@@ -2,6 +2,8 @@
     "resourceSpecId": "33333333-3333-4333-8333-333333333332",
     "stableId": "main-nlb",
     "displayName": "Main Network Load Balancer",
+    "category": "network",
+    "iconUrl": "https://cdn.sigmoid.us/icons/aws/full-size/svg/networking/elb.svg",
     "resourceType": "loadbalancer.elb",
     "vpcDependency": "required",
     "status": "draft",
