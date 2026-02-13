@@ -13,5 +13,17 @@
             "source": "github.com/sigmoid-hq/terraform-aws-nlb",
             "ref": "main"
         }
+    },
+    "pricing": {
+        "awsPricingLookup": {
+            "serviceCode": "AWSELB",
+            "unit": "hourly",
+            "quantityDefault": 1,
+            "filters": [
+                { "field": "location", "value": "${location}" },
+                { "field": "productFamily", "value": "Load Balancer-Network" },
+                { "field": "usagetype", "defaultValue": "LoadBalancerUsage", "required": false }
+            ]
+        }
     }
 }
