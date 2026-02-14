@@ -18,12 +18,32 @@
         "awsPricingLookup": {
             "serviceCode": "AWSELB",
             "unit": "hourly",
+            "quantityProperties": ["load_balancer_count", "count"],
             "quantityDefault": 1,
             "filters": [
                 { "field": "location", "value": "${location}" },
                 { "field": "productFamily", "value": "Load Balancer-Network" },
                 { "field": "usagetype", "defaultValue": "LoadBalancerUsage", "required": false }
             ]
+        },
+        "usageProfiles": {
+            "default": "medium",
+            "low": {
+                "load_balancer_count": 1,
+                "count": 1
+            },
+            "medium": {
+                "load_balancer_count": 2,
+                "count": 2
+            },
+            "high": {
+                "load_balancer_count": 4,
+                "count": 4
+            },
+            "xhigh": {
+                "load_balancer_count": 8,
+                "count": 8
+            }
         }
     }
 }
