@@ -45,5 +45,11 @@
                 "count": 8
             }
         }
+    },
+    "easy": {
+        "alias": "Load Balancer",
+        "group": "network-load-balancer",
+        "priority": 20,
+        "allowedProperties": ["internal", "load_balancer_type", "count"]
     }
 }
